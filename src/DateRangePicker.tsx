@@ -89,7 +89,7 @@ function CustomTextField(
     error?: string;
   }
 ) {
-  const { value, error, startDay, endDay } = props;
+  const { error, startDay, endDay } = props;
 
   return (
     <TextField
@@ -106,12 +106,24 @@ function CustomTextField(
   );
 }
 
-export default function DateRangePicker() {
-  const [error, setError] = React.useState(false);
-  const [value, setValue] = React.useState<(Dayjs | null)[]>([]);
+interface DateRangePickerProps {
+  value: (Dayjs | null)[];
+  onChange: (value: (Dayjs | null)[]) => void;
+  error?: string;
+}
+
+export default function DateRangePicker({
+  value,
+  onChange,
+  error,
+}: DateRangePickerProps) {
   const [startTurn, setStartTurn] = React.useState(true);
   const startDay = value[0];
   const endDay = value[1];
+
+  const updateValue = (newVal: (Dayjs | null)[]) => {
+    onChange(newVal);
+  };
 
   const handleChange = (newValue: Dayjs | null) => {
     if (!newValue) {
@@ -120,18 +132,18 @@ export default function DateRangePicker() {
     if (startTurn) {
       const isReverse = newValue?.isAfter(endDay);
       if (isReverse) {
-        setValue([newValue, null]);
+        updateValue([newValue, null]);
       } else {
-        setValue([newValue, endDay]);
+        updateValue([newValue, endDay]);
       }
       setStartTurn(false);
     } else {
       const isReverse = newValue?.isBefore(startDay);
       if (isReverse) {
-        setValue([newValue, endDay]);
+        updateValue([newValue, endDay]);
         setStartTurn(false);
       } else {
-        setValue([startDay, newValue]);
+        updateValue([startDay, newValue]);
         setStartTurn(true);
       }
     }
