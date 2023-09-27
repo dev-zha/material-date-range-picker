@@ -151,7 +151,7 @@ export default function DateRangePicker({
 
   return (
     <DatePicker
-      value={value as any}
+      value={startTurn ? startDay : endDay}
       label={'Date Range'}
       onChange={handleChange}
       showDaysOutsideCurrentMonth
